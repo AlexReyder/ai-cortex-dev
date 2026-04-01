@@ -4,7 +4,8 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { Users } from './collection/Users'
-
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,9 +18,10 @@ export default buildConfig({
       importMapFile: './app/(payload)/importMap.ts',
     },
   },
+  editor: lexicalEditor({}),
    email: nodemailerAdapter({
     defaultFromAddress: process.env.SMTP_USER as string,
-    defaultFromName: 'Atelier Meridian',
+    defaultFromName: 'Cortex ToDo',
     transportOptions: {
       host: process.env.SMTP_HOST,
       port: 465,
@@ -30,6 +32,140 @@ export default buildConfig({
     },
   }),
   collections: [Users],
+  plugins: [
+    formBuilderPlugin({
+      fields: {
+              text: true,
+              textarea: true,
+              select: true,
+              radio: true,
+              email: true,
+              checkbox: true,
+              number: true,
+              message: true,
+              country: false,
+              state: false,
+              date: false,
+              payment: false,
+            },
+            defaultToEmail: process.env.SMTP_USER,
+             formOverrides: {
+        access: {
+          read: () => true,
+        },
+        fields: ({ defaultFields }) => {
+          return [
+            ...defaultFields,
+            {
+              name: 'slug',
+              label: 'Slug формы',
+              type: 'text',
+              required: true,
+              unique: true,
+              index: true,
+              admin: {
+                description:
+                  'Технический slug для загрузки формы на фронтенде. Например: home-ai-lead',
+              },
+            },
+            {
+              name: 'formType',
+              label: 'Тип формы',
+              type: 'select',
+              defaultValue: 'section',
+              options: [
+                {
+                  label: 'Секционная форма',
+                  value: 'section',
+                },
+                {
+                  label: 'Модальное окно',
+                  value: 'modal',
+                },
+              ],
+            },
+          ]
+        },
+      },
+
+      formSubmissionOverrides: {
+        admin: {
+          defaultColumns: ['createdAt', 'form', 'sourcePage', 'sourceSection', 'intent', 'product'],
+        },
+        fields: ({ defaultFields }) => {
+          return [
+            ...defaultFields,
+            {
+              name: 'sourcePage',
+              label: 'Источник: страница',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'sourceSection',
+              label: 'Источник: секция',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'modalType',
+              label: 'Источник: modalType',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'product',
+              label: 'Продукт',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'intent',
+              label: 'Intent',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'utmSource',
+              label: 'UTM Source',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'utmMedium',
+              label: 'UTM Medium',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'utmCampaign',
+              label: 'UTM Campaign',
+              type: 'text',
+              admin: {
+                readOnly: true,
+              },
+            },
+          ]
+        },
+      },
+          }),
+          
+          
+    ],
   db: postgresAdapter({
       pool: {
           connectionString: process.env.DATABASE_URL || '',
