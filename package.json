@@ -9,7 +9,8 @@
     "start": "next start",
     "generate:types": "cross-env NODE_OPTIONS=--no-experimental-require-module payload generate:types",
     "generate:db": "cross-env NODE_OPTIONS=--no-experimental-require-module payload generate:db-schema",
-    "generate:importmap": "payload generate:importmap"
+    "generate:importmap": "payload generate:importmap",
+   "seed:lead-forms": "tsx scripts/seed-lead-forms.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -18,6 +19,7 @@
     "@payloadcms/next": "^3.81.0",
     "@payloadcms/plugin-form-builder": "^3.81.0",
     "@payloadcms/richtext-lexical": "^3.81.0",
+    "@payloadcms/translations": "^3.81.0",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
     "@radix-ui/react-aspect-ratio": "1.1.8",
@@ -70,11 +72,13 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@next/env": "^16.2.2",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^22",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "cross-env": "^10.1.0",
+    "dotenv": "^17.3.1",
     "postcss": "^8.5",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.0",

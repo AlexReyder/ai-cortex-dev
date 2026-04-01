@@ -26,6 +26,9 @@ importers:
       '@payloadcms/richtext-lexical':
         specifier: ^3.81.0
         version: 3.81.0(@faceless-ui/modal@3.0.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@payloadcms/next@3.81.0(@types/react@19.2.14)(graphql@16.13.2)(monaco-editor@0.55.1)(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(payload@3.81.0(graphql@16.13.2)(typescript@5.7.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.7.3))(@types/react@19.2.14)(monaco-editor@0.55.1)(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4))(payload@3.81.0(graphql@16.13.2)(typescript@5.7.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.7.3)(yjs@13.6.30)
+      '@payloadcms/translations':
+        specifier: ^3.81.0
+        version: 3.81.0
       '@radix-ui/react-accordion':
         specifier: 1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -177,6 +180,9 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
+      '@next/env':
+        specifier: ^16.2.2
+        version: 16.2.2
       '@tailwindcss/postcss':
         specifier: ^4.2.0
         version: 4.2.1
@@ -192,6 +198,9 @@ importers:
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
+      dotenv:
+        specifier: ^17.3.1
+        version: 17.3.1
       postcss:
         specifier: ^8.5
         version: 8.5.8
@@ -1113,6 +1122,9 @@ packages:
 
   '@next/env@16.1.6':
     resolution: {integrity: sha512-N1ySLuZjnAtN3kFnwhAwPvZah8RJxKasD7x1f8shFqhncnWZn4JMfg37diLNuoHsLAlrDfM3g4mawVdtAG8XLQ==}
+
+  '@next/env@16.2.2':
+    resolution: {integrity: sha512-LqSGz5+xGk9EL/iBDr2yo/CgNQV6cFsNhRR2xhSXYh7B/hb4nePCxlmDvGEKG30NMHDFf0raqSyOZiQrO7BkHQ==}
 
   '@next/swc-darwin-arm64@16.1.6':
     resolution: {integrity: sha512-wTzYulosJr/6nFnqGW7FrG3jfUUlEf8UjGA0/pyypJl42ExdVgC6xJgcXQ+V8QFn6niSG2Pb8+MIG1mZr2vczw==}
@@ -2366,6 +2378,10 @@ packages:
 
   dompurify@3.2.7:
     resolution: {integrity: sha512-WhL/YuveyGXJaerVlMYGWhvQswa7myDG17P7Vu65EWC05o8vfeNbvNf4d/BOvH99+ZW+LlQsc1GDKMa1vNK6dw==}
+
+  dotenv@17.3.1:
+    resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
+    engines: {node: '>=12'}
 
   drizzle-kit@0.31.7:
     resolution: {integrity: sha512-hOzRGSdyKIU4FcTSFYGKdXEjFsncVwHZ43gY3WU5Bz9j5Iadp6Rh6hxLSQ1IWXpKLBKt/d5y1cpSPcV+FcoQ1A==}
@@ -4416,6 +4432,8 @@ snapshots:
 
   '@next/env@16.1.6': {}
 
+  '@next/env@16.2.2': {}
+
   '@next/swc-darwin-arm64@16.1.6':
     optional: true
 
@@ -5778,6 +5796,8 @@ snapshots:
   dompurify@3.2.7:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
+
+  dotenv@17.3.1: {}
 
   drizzle-kit@0.31.7:
     dependencies:
