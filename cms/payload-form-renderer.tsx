@@ -135,6 +135,19 @@ function buildInitialState(fields: PayloadFormField[]): Record<string, FormState
   }, {})
 }
 
+function getFieldSpanClass(field: PayloadFormField): string {
+  if (field.blockType === 'message') return 'sm:col-span-2'
+  if (field.blockType === 'textarea') return 'sm:col-span-2'
+  if (field.blockType === 'radio') return 'sm:col-span-2'
+  if (field.blockType === 'checkbox') return 'sm:col-span-2'
+
+  if (typeof field.width === 'number') {
+    return field.width >= 100 ? 'sm:col-span-2' : 'sm:col-span-1'
+  }
+
+  return 'sm:col-span-2'
+}
+
 export function PayloadFormRenderer({
   formSlug,
   themeVariant = 'dark',
@@ -229,7 +242,6 @@ export function PayloadFormRenderer({
         input:
           'bg-background-light-secondary border-border-light text-foreground-dark placeholder:text-foreground-dark-secondary',
         note: 'text-foreground-dark-secondary',
-        successCard: 'bg-white border-border-light',
       }
     }
 
@@ -241,7 +253,6 @@ export function PayloadFormRenderer({
       input:
         'bg-background border-card-border text-foreground placeholder:text-foreground-muted',
       note: 'text-foreground-muted',
-      successCard: 'bg-card border-card-border',
     }
   }, [themeVariant])
 
@@ -263,7 +274,6 @@ export function PayloadFormRenderer({
 
   const handleCheckboxGroupChange = (name: string, optionValue: string, checked: boolean) => {
     const current = Array.isArray(values[name]) ? values[name] : []
-
     const next = checked
       ? [...current, optionValue]
       : current.filter((item) => item !== optionValue)
@@ -385,172 +395,177 @@ export function PayloadFormRenderer({
       ) : null}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {form.fields?.map((field, index) => {
-          const key = field.id || `${field.blockType}-${field.name || index}`
+        <div className="grid sm:grid-cols-2 gap-4">
+          {form.fields?.map((field, index) => {
+            const key = field.id || `${field.blockType}-${field.name || index}`
+            const spanClass = getFieldSpanClass(field)
 
-          if (field.blockType === 'message') {
-            const messageText = extractPlainText(field.message)
-            if (!messageText) return null
+            if (field.blockType === 'message') {
+              const messageText = extractPlainText(field.message)
+              if (!messageText) return null
+
+              return (
+                <div key={key} className={cn(spanClass, 'text-sm leading-6', styles.text)}>
+                  {messageText}
+                </div>
+              )
+            }
+
+            if (!field.name) return null
+
+            const value = values[field.name]
+
+            if (field.blockType === 'textarea') {
+              return (
+                <div key={key} className={spanClass}>
+                  <label className={cn('block text-sm font-medium mb-2', styles.label)}>
+                    {field.label || field.name}
+                    {field.required ? <span className="text-accent-red ml-1">*</span> : null}
+                  </label>
+                  <Textarea
+                    required={field.required}
+                    value={typeof value === 'string' ? value : ''}
+                    onChange={(e) => handleChange(field.name as string, e.target.value)}
+                    placeholder={field.placeholder}
+                    rows={4}
+                    className={cn('resize-none', styles.input)}
+                  />
+                </div>
+              )
+            }
+
+            if (field.blockType === 'select') {
+              return (
+                <div key={key} className={spanClass}>
+                  <label className={cn('block text-sm font-medium mb-2', styles.label)}>
+                    {field.label || field.name}
+                    {field.required ? <span className="text-accent-red ml-1">*</span> : null}
+                  </label>
+                  <select
+                    required={field.required}
+                    value={typeof value === 'string' || typeof value === 'number' ? String(value) : ''}
+                    onChange={(e) => handleChange(field.name as string, e.target.value)}
+                    className={cn(
+                      'w-full h-11 px-3 rounded-md border outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                      styles.input,
+                    )}
+                  >
+                    <option value="">{field.placeholder || 'Выберите вариант'}</option>
+                    {field.options?.map((option) => (
+                      <option key={`${field.name}-${option.value}`} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )
+            }
+
+            if (field.blockType === 'radio') {
+              return (
+                <div key={key} className={spanClass}>
+                  <span className={cn('block text-sm font-medium mb-3', styles.label)}>
+                    {field.label || field.name}
+                    {field.required ? <span className="text-accent-red ml-1">*</span> : null}
+                  </span>
+                  <div className="space-y-2">
+                    {field.options?.map((option) => (
+                      <label
+                        key={`${field.name}-${option.value}`}
+                        className={cn('flex items-center gap-2 text-sm', styles.text)}
+                      >
+                        <input
+                          type="radio"
+                          name={field.name}
+                          value={option.value}
+                          checked={value === option.value}
+                          onChange={() => handleChange(field.name as string, option.value)}
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+
+            if (field.blockType === 'checkbox' && field.options?.length) {
+              const currentValues = Array.isArray(value) ? value : []
+
+              return (
+                <div key={key} className={spanClass}>
+                  <span className={cn('block text-sm font-medium mb-3', styles.label)}>
+                    {field.label || field.name}
+                    {field.required ? <span className="text-accent-red ml-1">*</span> : null}
+                  </span>
+                  <div className="space-y-2">
+                    {field.options.map((option) => (
+                      <label
+                        key={`${field.name}-${option.value}`}
+                        className={cn('flex items-center gap-2 text-sm', styles.text)}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={currentValues.includes(option.value)}
+                          onChange={(e) =>
+                            handleCheckboxGroupChange(
+                              field.name as string,
+                              option.value,
+                              e.target.checked,
+                            )
+                          }
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+
+            if (field.blockType === 'checkbox') {
+              return (
+                <div key={key} className={spanClass}>
+                  <label className={cn('flex items-center gap-3 text-sm', styles.text)}>
+                    <input
+                      type="checkbox"
+                      checked={Boolean(value)}
+                      onChange={(e) => handleChange(field.name as string, e.target.checked)}
+                    />
+                    <span>
+                      {field.label || field.name}
+                      {field.required ? <span className="text-accent-red ml-1">*</span> : null}
+                    </span>
+                  </label>
+                </div>
+              )
+            }
+
+            const inputType =
+              field.blockType === 'email'
+                ? 'email'
+                : field.blockType === 'number'
+                  ? 'number'
+                  : 'text'
 
             return (
-              <div key={key} className={cn('text-sm leading-6', styles.text)}>
-                {messageText}
-              </div>
-            )
-          }
-
-          if (!field.name) return null
-
-          const value = values[field.name]
-
-          if (field.blockType === 'textarea') {
-            return (
-              <div key={key}>
+              <div key={key} className={spanClass}>
                 <label className={cn('block text-sm font-medium mb-2', styles.label)}>
                   {field.label || field.name}
                   {field.required ? <span className="text-accent-red ml-1">*</span> : null}
                 </label>
-                <Textarea
-                  required={field.required}
-                  value={typeof value === 'string' ? value : ''}
-                  onChange={(e) => handleChange(field.name as string, e.target.value)}
-                  placeholder={field.placeholder}
-                  rows={4}
-                  className={cn('resize-none', styles.input)}
-                />
-              </div>
-            )
-          }
-
-          if (field.blockType === 'select') {
-            return (
-              <div key={key}>
-                <label className={cn('block text-sm font-medium mb-2', styles.label)}>
-                  {field.label || field.name}
-                  {field.required ? <span className="text-accent-red ml-1">*</span> : null}
-                </label>
-                <select
+                <Input
+                  type={inputType}
                   required={field.required}
                   value={typeof value === 'string' || typeof value === 'number' ? String(value) : ''}
                   onChange={(e) => handleChange(field.name as string, e.target.value)}
-                  className={cn(
-                    'w-full h-11 px-3 rounded-md border outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
-                    styles.input,
-                  )}
-                >
-                  <option value="">{field.placeholder || 'Выберите вариант'}</option>
-                  {field.options?.map((option) => (
-                    <option key={`${field.name}-${option.value}`} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )
-          }
-
-          if (field.blockType === 'radio') {
-            return (
-              <div key={key}>
-                <span className={cn('block text-sm font-medium mb-3', styles.label)}>
-                  {field.label || field.name}
-                  {field.required ? <span className="text-accent-red ml-1">*</span> : null}
-                </span>
-                <div className="space-y-2">
-                  {field.options?.map((option) => (
-                    <label
-                      key={`${field.name}-${option.value}`}
-                      className={cn('flex items-center gap-2 text-sm', styles.text)}
-                    >
-                      <input
-                        type="radio"
-                        name={field.name}
-                        value={option.value}
-                        checked={value === option.value}
-                        onChange={() => handleChange(field.name as string, option.value)}
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )
-          }
-
-          if (field.blockType === 'checkbox' && field.options?.length) {
-            const currentValues = Array.isArray(value) ? value : []
-
-            return (
-              <div key={key}>
-                <span className={cn('block text-sm font-medium mb-3', styles.label)}>
-                  {field.label || field.name}
-                  {field.required ? <span className="text-accent-red ml-1">*</span> : null}
-                </span>
-                <div className="space-y-2">
-                  {field.options.map((option) => (
-                    <label
-                      key={`${field.name}-${option.value}`}
-                      className={cn('flex items-center gap-2 text-sm', styles.text)}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={currentValues.includes(option.value)}
-                        onChange={(e) =>
-                          handleCheckboxGroupChange(
-                            field.name as string,
-                            option.value,
-                            e.target.checked,
-                          )
-                        }
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )
-          }
-
-          if (field.blockType === 'checkbox') {
-            return (
-              <label key={key} className={cn('flex items-center gap-3 text-sm', styles.text)}>
-                <input
-                  type="checkbox"
-                  checked={Boolean(value)}
-                  onChange={(e) => handleChange(field.name as string, e.target.checked)}
+                  placeholder={field.placeholder}
+                  className={styles.input}
                 />
-                <span>
-                  {field.label || field.name}
-                  {field.required ? <span className="text-accent-red ml-1">*</span> : null}
-                </span>
-              </label>
+              </div>
             )
-          }
-
-          const inputType =
-            field.blockType === 'email'
-              ? 'email'
-              : field.blockType === 'number'
-                ? 'number'
-                : 'text'
-
-          return (
-            <div key={key}>
-              <label className={cn('block text-sm font-medium mb-2', styles.label)}>
-                {field.label || field.name}
-                {field.required ? <span className="text-accent-red ml-1">*</span> : null}
-              </label>
-              <Input
-                type={inputType}
-                required={field.required}
-                value={typeof value === 'string' || typeof value === 'number' ? String(value) : ''}
-                onChange={(e) => handleChange(field.name as string, e.target.value)}
-                placeholder={field.placeholder}
-                className={styles.input}
-              />
-            </div>
-          )
-        })}
+          })}
+        </div>
 
         {submitError ? <p className="text-sm text-red-500">{submitError}</p> : null}
 
