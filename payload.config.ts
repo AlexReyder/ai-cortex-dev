@@ -1,12 +1,13 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import { Users } from './collection/Users'
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { formBuilderPlugin, fields as formBuilderFields } from '@payloadcms/plugin-form-builder'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { ru } from '@payloadcms/translations/languages/ru'
+
+import { Users } from './collection/Users'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,6 +21,39 @@ const disableEmail =
   !process.env.SMTP_USER ||
   !process.env.SMTP_PASS
 
+const placeholderField = {
+  name: 'placeholder',
+  label: 'Placeholder',
+  type: 'text' as const,
+  admin: {
+    description: 'Подсказка внутри поля на фронтенде',
+  },
+}
+
+const textBlock =
+  formBuilderFields.text && 'fields' in formBuilderFields.text
+    ? {
+        ...formBuilderFields.text,
+        fields: [...formBuilderFields.text.fields, placeholderField],
+      }
+    : true
+
+const emailBlock =
+  formBuilderFields.email && 'fields' in formBuilderFields.email
+    ? {
+        ...formBuilderFields.email,
+        fields: [...formBuilderFields.email.fields, placeholderField],
+      }
+    : true
+
+const textareaBlock =
+  formBuilderFields.textarea && 'fields' in formBuilderFields.textarea
+    ? {
+        ...formBuilderFields.textarea,
+        fields: [...formBuilderFields.textarea.fields, placeholderField],
+      }
+    : true
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -27,10 +61,6 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
       importMapFile: './app/(payload)/importMap.ts',
     },
-  },
-   i18n: {
-    fallbackLanguage: 'ru',
-     supportedLanguages: { ru }
   },
 
   editor: lexicalEditor({}),
@@ -56,11 +86,11 @@ export default buildConfig({
   plugins: [
     formBuilderPlugin({
       fields: {
-        text: true,
-        textarea: true,
+        text: textBlock,
+        email: emailBlock,
+        textarea: textareaBlock,
         select: true,
         radio: true,
-        email: true,
         checkbox: true,
         number: true,
         message: true,
@@ -70,9 +100,18 @@ export default buildConfig({
         payment: false,
       },
 
-      defaultToEmail: process.env.SMTP_USER || undefined,
+      defaultToEmail: process.env.LEADS_TO_EMAIL || process.env.SMTP_USER || undefined,
 
       formOverrides: {
+        labels: {
+          singular: 'Форма',
+          plural: 'Формы',
+        },
+        admin: {
+          group: 'Формы и заявки',
+          useAsTitle: 'title',
+          defaultColumns: ['title', 'slug', 'formType', 'updatedAt'],
+        },
         access: {
           read: () => true,
         },
@@ -112,8 +151,20 @@ export default buildConfig({
       },
 
       formSubmissionOverrides: {
+        labels: {
+          singular: 'Заявка с формы',
+          plural: 'Заявки с форм',
+        },
         admin: {
-          defaultColumns: ['createdAt', 'form', 'sourcePage', 'sourceSection', 'intent', 'product'],
+          group: 'Формы и заявки',
+          defaultColumns: [
+            'createdAt',
+            'form',
+            'sourcePage',
+            'sourceSection',
+            'intent',
+            'product',
+          ],
         },
         fields: ({ defaultFields }) => {
           return [

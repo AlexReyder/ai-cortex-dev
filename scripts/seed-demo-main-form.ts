@@ -32,7 +32,6 @@ function loadEnvFiles() {
 }
 
 loadEnvFiles()
-
 process.env.PAYLOAD_SEED = 'true'
 
 const { default: config } = await import('../payload.config')
@@ -55,32 +54,39 @@ type FormSeed = {
   submitButtonLabel: string
   confirmationType: 'message'
   confirmationMessage: RichText
+  emails: Array<{
+    emailTo?: string
+    cc?: string
+    bcc?: string
+    replyTo?: string
+    emailFrom?: string
+    subject: string
+    message: RichText
+  }>
   fields: Array<Record<string, unknown>>
 }
 
-const richText = (text: string): RichText => ({
+const richTextParagraphs = (paragraphs: string[]): RichText => ({
   root: {
     type: 'root',
-    children: [
-      {
-        type: 'paragraph',
-        children: [
-          {
-            type: 'text',
-            text,
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            version: 1,
-          },
-        ],
-        direction: null,
-        format: '',
-        indent: 0,
-        version: 1,
-      },
-    ],
+    children: paragraphs.map((text) => ({
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          text,
+          detail: 0,
+          format: 0,
+          mode: 'normal',
+          style: '',
+          version: 1,
+        },
+      ],
+      direction: null,
+      format: '',
+      indent: 0,
+      version: 1,
+    })),
     direction: null,
     format: '',
     indent: 0,
@@ -93,17 +99,20 @@ const textField = ({
   label,
   required = false,
   width = 50,
+  placeholder,
 }: {
   name: string
   label: string
   required?: boolean
   width?: number
+  placeholder?: string
 }) => ({
   blockType: 'text',
   name,
   label,
   required,
   width,
+  ...(placeholder ? { placeholder } : {}),
 })
 
 const emailField = ({
@@ -111,17 +120,20 @@ const emailField = ({
   label,
   required = false,
   width = 50,
+  placeholder,
 }: {
   name: string
   label: string
   required?: boolean
   width?: number
+  placeholder?: string
 }) => ({
   blockType: 'email',
   name,
   label,
   required,
   width,
+  ...(placeholder ? { placeholder } : {}),
 })
 
 const textareaField = ({
@@ -129,17 +141,20 @@ const textareaField = ({
   label,
   required = false,
   width = 100,
+  placeholder,
 }: {
   name: string
   label: string
   required?: boolean
   width?: number
+  placeholder?: string
 }) => ({
   blockType: 'textarea',
   name,
   label,
   required,
   width,
+  ...(placeholder ? { placeholder } : {}),
 })
 
 const selectField = ({
@@ -166,36 +181,58 @@ const selectField = ({
   options,
 })
 
+const buildInternalNotification = ({
+  subject,
+  bodyLines,
+}: {
+  subject: string
+  bodyLines: string[]
+}) => ({
+  emailFrom: process.env.SMTP_USER,
+  subject,
+  message: richTextParagraphs([
+    ...bodyLines,
+    '',
+    'Полный набор отправленных данных:',
+    '{{*:table}}',
+  ]),
+})
+
 const commonFields = () => [
   textField({
     name: 'name',
     label: 'Имя',
     required: true,
     width: 50,
+    placeholder: 'Ваше имя',
   }),
   textField({
     name: 'company',
     label: 'Компания',
     required: true,
     width: 50,
+    placeholder: 'Название компании',
   }),
   textField({
     name: 'position',
     label: 'Должность',
     required: false,
     width: 50,
+    placeholder: 'Ваша должность',
   }),
   emailField({
     name: 'email',
     label: 'Email',
     required: true,
     width: 50,
+    placeholder: 'email@company.ru',
   }),
   textField({
     name: 'phone',
     label: 'Телефон',
     required: false,
     width: 100,
+    placeholder: '+7 (___) ___-__-__',
   }),
 ]
 
@@ -206,7 +243,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Запросить демо',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: демо ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Что хочет посмотреть: {{intentField}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -214,12 +268,14 @@ const demoForms: FormSeed[] = [
         label: 'Что хотите посмотреть?',
         required: false,
         width: 100,
+        placeholder: 'Опишите кратко',
       }),
       textareaField({
         name: 'comment',
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -229,7 +285,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Запросить демо-стенд',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: демо-стенд ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Что хочет оценить самостоятельно: {{intentField}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -237,12 +310,14 @@ const demoForms: FormSeed[] = [
         label: 'Что хотите оценить самостоятельно?',
         required: false,
         width: 100,
+        placeholder: 'Опишите кратко',
       }),
       textareaField({
         name: 'comment',
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -252,7 +327,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить пилот',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: пилот ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Какой процесс хочет проверить на пилоте: {{intentField}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -260,12 +352,14 @@ const demoForms: FormSeed[] = [
         label: 'Какой процесс хотите проверить на пилоте?',
         required: false,
         width: 100,
+        placeholder: 'Опишите кратко',
       }),
       textareaField({
         name: 'comment',
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -275,7 +369,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить миграцию',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: миграция на ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'С какой системы переходит: {{intentField}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -283,12 +394,14 @@ const demoForms: FormSeed[] = [
         label: 'С какой системы переходите?',
         required: false,
         width: 100,
+        placeholder: 'Опишите кратко',
       }),
       textareaField({
         name: 'comment',
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -298,7 +411,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить архитектуру',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: архитектура размещения ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Где планирует размещение: {{deployment}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       selectField({
@@ -318,6 +448,7 @@ const demoForms: FormSeed[] = [
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -327,7 +458,24 @@ const demoForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить кастомизацию',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: кастомизация ToDo Enterprise',
+        bodyLines: [
+          'Новая заявка с demo-страницы.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Какие доработки интересуют: {{intentField}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -335,12 +483,14 @@ const demoForms: FormSeed[] = [
         label: 'Какие доработки вас интересуют?',
         required: false,
         width: 100,
+        placeholder: 'Опишите кратко',
       }),
       textareaField({
         name: 'comment',
         label: 'Комментарий',
         required: false,
         width: 100,
+        placeholder: 'Дополнительная информация',
       }),
     ],
   },
@@ -366,6 +516,7 @@ async function upsertForm(payload: Awaited<ReturnType<typeof getPayload>>, form:
     submitButtonLabel: form.submitButtonLabel,
     confirmationType: form.confirmationType,
     confirmationMessage: form.confirmationMessage,
+    emails: form.emails,
     fields: form.fields,
   } as const
 

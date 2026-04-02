@@ -54,32 +54,39 @@ type FormSeed = {
   submitButtonLabel: string
   confirmationType: 'message'
   confirmationMessage: RichText
+  emails: Array<{
+    emailTo?: string
+    cc?: string
+    bcc?: string
+    replyTo?: string
+    emailFrom?: string
+    subject: string
+    message: RichText
+  }>
   fields: Array<Record<string, unknown>>
 }
 
-const richText = (text: string): RichText => ({
+const richTextParagraphs = (paragraphs: string[]): RichText => ({
   root: {
     type: 'root',
-    children: [
-      {
-        type: 'paragraph',
-        children: [
-          {
-            type: 'text',
-            text,
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            version: 1,
-          },
-        ],
-        direction: null,
-        format: '',
-        indent: 0,
-        version: 1,
-      },
-    ],
+    children: paragraphs.map((text) => ({
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          text,
+          detail: 0,
+          format: 0,
+          mode: 'normal',
+          style: '',
+          version: 1,
+        },
+      ],
+      direction: null,
+      format: '',
+      indent: 0,
+      version: 1,
+    })),
     direction: null,
     format: '',
     indent: 0,
@@ -174,6 +181,23 @@ const selectField = ({
   options,
 })
 
+const buildInternalNotification = ({
+  subject,
+  bodyLines,
+}: {
+  subject: string
+  bodyLines: string[]
+}) => ({
+  emailFrom: process.env.SMTP_USER,
+  subject,
+  message: richTextParagraphs([
+    ...bodyLines,
+    '',
+    'Полный набор отправленных данных:',
+    '{{*:table}}',
+  ]),
+})
+
 const commonFields = () => [
   textField({
     name: 'name',
@@ -219,7 +243,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Запросить демо',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: демо со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Что хочет посмотреть: {{whatToShow}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -244,7 +285,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Запросить демо-стенд',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: демо-стенд со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Что хочет проверить в пилоте: {{whatToTest}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -269,7 +327,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить миграцию',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: миграция со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'С какой системы переходят: {{migrationFrom}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textField({
@@ -294,7 +369,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить архитектуру',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: архитектура со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Где планируют размещение: {{deploymentLocation}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       selectField({
@@ -324,7 +416,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Обсудить кастомизацию',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: кастомизация со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Какие доработки интересуют: {{customizationNeeds}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       textareaField({
@@ -349,7 +458,24 @@ const contactForms: FormSeed[] = [
     formType: 'section',
     submitButtonLabel: 'Отправить партнерский запрос',
     confirmationType: 'message',
-    confirmationMessage: richText('Спасибо за запрос. Мы свяжемся с вами в ближайшее время.'),
+    confirmationMessage: richTextParagraphs([
+      'Спасибо за запрос. Мы свяжемся с вами в ближайшее время.',
+    ]),
+    emails: [
+      buildInternalNotification({
+        subject: 'Новая заявка: партнерство со страницы контактов',
+        bodyLines: [
+          'Новая заявка со страницы контактов.',
+          'Имя: {{name}}',
+          'Компания: {{company}}',
+          'Должность: {{position}}',
+          'Email: {{email}}',
+          'Телефон: {{phone}}',
+          'Тип партнерства: {{partnerType}}',
+          'Комментарий: {{comment}}',
+        ],
+      }),
+    ],
     fields: [
       ...commonFields(),
       selectField({
@@ -397,6 +523,7 @@ async function upsertForm(payload: Awaited<ReturnType<typeof getPayload>>, form:
     submitButtonLabel: form.submitButtonLabel,
     confirmationType: form.confirmationType,
     confirmationMessage: form.confirmationMessage,
+    emails: form.emails,
     fields: form.fields,
   } as const
 

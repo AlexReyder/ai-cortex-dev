@@ -12,7 +12,11 @@
     "generate:importmap": "payload generate:importmap",
    "seed:lead-forms": "tsx scripts/seed-lead-forms.ts",
    "seed:demo-main-form": "tsx scripts/seed-demo-main-form.ts",
-   "seed:contacts-form": "tsx scripts/seed-contacts-form.ts"
+   "seed:contacts-form": "tsx scripts/seed-contacts-form.ts",
+   "seed:investor-contact": "tsx scripts/seed-investor-contact.ts",
+   "seed:cta-modals-part-1": "tsx scripts/seed-cta-modals-part-1.ts",
+   "seed:cta-modals-part-2": "tsx scripts/seed-cta-modals-part-2.ts",
+   "seed:cta-modals-part-3": "tsx scripts/seed-cta-modals-part-3.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

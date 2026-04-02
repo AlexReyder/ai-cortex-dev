@@ -93,6 +93,7 @@ const richTextParagraphs = (paragraphs: string[]): RichText => ({
     version: 1,
   },
 })
+
 const textField = ({
   name,
   label,
@@ -163,6 +164,11 @@ const buildInternalNotification = ({
   subject: string
   bodyLines: string[]
 }) => ({
+  emailTo:
+    process.env.INVESTOR_TO_EMAIL ||
+    process.env.LEADS_TO_EMAIL ||
+    process.env.SMTP_USER ||
+    undefined,
   emailFrom: process.env.SMTP_USER,
   subject,
   message: richTextParagraphs([
@@ -173,144 +179,59 @@ const buildInternalNotification = ({
   ]),
 })
 
-const leadForms: FormSeed[] = [
-  {
-    title: 'Главная — заявка AI',
-    slug: 'home-ai-lead',
-    formType: 'section',
-    submitButtonLabel: 'Отправить заявку',
-    confirmationType: 'message',
-    confirmationMessage: richTextParagraphs([
-      'Спасибо! Мы свяжемся с вами в ближайшее время.',
-    ]),
-    emails: [
-  buildInternalNotification({
-    subject: 'Новая заявка: AI с главной страницы',
-    bodyLines: [
-      'Новая заявка с сайта.',
-      'Имя: {{name}}',
-      'Компания: {{company}}',
-      'Должность: {{role}}',
-      'Email: {{email}}',
-      'Телефон: {{phone}}',
-      'Что хочет автоматизировать: {{message}}',
-    ],
-  }),
-],
-    fields: [
-     textField({
-  name: 'name',
-  label: 'Имя',
-  required: true,
-  width: 50,
-  placeholder: 'Ваше имя',
-}),
-textField({
-  name: 'company',
-  label: 'Компания',
-  required: true,
-  width: 50,
-  placeholder: 'Название компании',
-}),
-textField({
-  name: 'role',
-  label: 'Должность',
-  required: false,
-  width: 50,
-  placeholder: 'Ваша должность',
-}),
-emailField({
-  name: 'email',
-  label: 'Email',
-  required: true,
-  width: 50,
-  placeholder: 'email@company.ru',
-}),
-textField({
-  name: 'phone',
-  label: 'Телефон',
-  required: false,
-  width: 100,
-  placeholder: '+7 (___) ___-__-__',
-}),
-textareaField({
-  name: 'message',
-  label: 'Что хотите автоматизировать?',
-  required: false,
-  width: 100,
-  placeholder: 'Опишите процессы, которые хотите автоматизировать...',
-}),
-    ],
-  },
-  {
-    title: 'Главная — заявка ToDo',
-    slug: 'home-todo-lead',
-    formType: 'section',
-    submitButtonLabel: 'Отправить заявку',
-    confirmationType: 'message',
-    confirmationMessage: richTextParagraphs([
-      'Спасибо! Мы свяжемся с вами в ближайшее время.',
-    ]),
-    emails: [
-  buildInternalNotification({
-    subject: 'Новая заявка: ToDo с главной страницы',
-    bodyLines: [
-      'Новая заявка с сайта.',
-      'Имя: {{name}}',
-      'Компания: {{company}}',
-      'Роль в компании: {{role}}',
-      'Email: {{email}}',
-      'Телефон: {{phone}}',
-      'Что хочет заменить / внедрить: {{message}}',
-    ],
-  }),
-],
-    fields: [
-      textField({
-        name: 'name',
-        label: 'Имя',
-        required: true,
-        width: 50,
-        placeholder:'Ваше имя'
-      }),
-      textField({
-        name: 'company',
-        label: 'Компания',
-        required: true,
-        width: 50,
-        placeholder:'Название компании'
-      }),
-      textField({
-        name: 'role',
-        label: 'Роль в компании',
-        required: false,
-        width: 50,
-        placeholder:'Ваша роль'
-      }),
-      emailField({
-        name: 'email',
-        label: 'Email',
-        required: true,
-        width: 50,
-        placeholder:'email@company.ru'
-      }),
-      textField({
-        name: 'phone',
-        label: 'Телефон',
-        required: false,
-        width: 100,
-        placeholder:'+7 (___) ___-__-__'
-      }),
-      textareaField({
-        name: 'message',
-        label: 'Что хотите заменить / внедрить?',
-        required: false,
-        width: 100,
-        placeholder:'Опишите текущую систему и задачи...'
-      }),
-    ],
-  },
-]
+const investorForm: FormSeed = {
+  title: 'Investors — инвестиционный диалог',
+  slug: 'investor-contact',
+  formType: 'section',
+  submitButtonLabel: 'Связаться с командой',
+  confirmationType: 'message',
+  confirmationMessage: richTextParagraphs([
+    'Спасибо за интерес.',
+    'Мы свяжемся с вами в ближайшее время для обсуждения инвестиционного тезиса.',
+  ]),
+  emails: [
+    buildInternalNotification({
+      subject: 'Новая инвестиционная заявка с сайта',
+      bodyLines: [
+        'Новая заявка со страницы investors.',
+        'Имя: {{name}}',
+        'Email: {{email}}',
+        'Компания / Фонд: {{company}}',
+        'Сообщение: {{message}}',
+      ],
+    }),
+  ],
+  fields: [
+    textField({
+      name: 'name',
+      label: 'Имя',
+      required: true,
+      width: 50,
+      placeholder: 'Ваше имя',
+    }),
+    emailField({
+      name: 'email',
+      label: 'Email',
+      required: true,
+      width: 50,
+      placeholder: 'email@company.com',
+    }),
+    textField({
+      name: 'company',
+      label: 'Компания / Фонд',
+      required: false,
+      width: 100,
+      placeholder: 'Название организации',
+    }),
+    textareaField({
+      name: 'message',
+      label: 'Сообщение',
+      required: false,
+      width: 100,
+      placeholder: 'Расскажите о вашем интересе к проекту...',
+    }),
+  ],
+}
 
 async function upsertForm(payload: Awaited<ReturnType<typeof getPayload>>, form: FormSeed) {
   const existing = await payload.find({
@@ -360,15 +281,13 @@ async function upsertForm(payload: Awaited<ReturnType<typeof getPayload>>, form:
 async function run() {
   const payload = await getPayload({ config })
 
-  for (const form of leadForms) {
-    await upsertForm(payload, form)
-  }
+  await upsertForm(payload, investorForm)
 
-  payload.logger.info('Seed для lead-forms завершён.')
+  payload.logger.info('Seed для investor contact завершён.')
   process.exit(0)
 }
 
 run().catch((error) => {
-  console.error('Ошибка при seed lead-forms:', error)
+  console.error('Ошибка при seed investor contact:', error)
   process.exit(1)
 })

@@ -169,6 +169,10 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             required?: boolean | null;
+            /**
+             * Подсказка внутри поля на фронтенде
+             */
+            placeholder?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'email';
@@ -227,6 +231,10 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Подсказка внутри поля на фронтенде
+             */
+            placeholder?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'text';
@@ -237,6 +245,10 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Подсказка внутри поля на фронтенде
+             */
+            placeholder?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'textarea';
@@ -476,6 +488,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
+              placeholder?: T;
               id?: T;
               blockName?: T;
             };
@@ -524,6 +537,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              placeholder?: T;
               id?: T;
               blockName?: T;
             };
@@ -535,6 +549,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              placeholder?: T;
               id?: T;
               blockName?: T;
             };
