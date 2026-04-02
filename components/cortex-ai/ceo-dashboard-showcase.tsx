@@ -75,7 +75,7 @@ export function CEODashboardShowcase() {
               {/* Product image - clean, no fake browser chrome */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/30 border border-border/50">
                 <Image
-                  src="images/ceo-dashboard-showcase.png"
+                  src="/images/ceo-dashboard-showcase.png"
                   alt="Cortex AI - CEO Dashboard с общей картиной компании и AI-рекомендациями"
                   width={1200}
                   height={800}

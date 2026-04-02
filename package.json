@@ -17,7 +17,8 @@
    "seed:cta-modals-part-1": "tsx scripts/seed-cta-modals-part-1.ts",
    "seed:cta-modals-part-2": "tsx scripts/seed-cta-modals-part-2.ts",
    "seed:cta-modals-part-3": "tsx scripts/seed-cta-modals-part-3.ts",
-   "seed:pages-seo": "tsx scripts/seed-pages-seo.ts"
+   "seed:pages-seo": "tsx scripts/seed-pages-seo.ts",
+   "update:forms-recipient": "tsx scripts/update-forms-recipient.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

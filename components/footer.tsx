@@ -138,7 +138,7 @@ export function Footer() {
                 Политика конфиденциальности
               </Link>
               <span className="hidden md:inline">·</span>
-              <span>© {new Date().getFullYear()}</span>
+              <span>© 2026</span>
             </div>
           </div>
         </div>

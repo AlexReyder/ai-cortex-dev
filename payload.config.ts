@@ -14,14 +14,6 @@ import { Pages } from './collection/Pages'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const smtpPort = Number(process.env.SMTP_PORT ?? 465)
-
-const disableEmail =
-  process.env.PAYLOAD_SEED === 'true' ||
-  process.env.DISABLE_EMAIL === 'true' ||
-  !process.env.SMTP_HOST ||
-  !process.env.SMTP_USER ||
-  !process.env.SMTP_PASS
 
 type FieldConfigLike = Record<string, any>
 
@@ -74,7 +66,7 @@ const FIELD_DESCRIPTION_TRANSLATIONS: Record<string, string> = {
 }
 
 function localizeFieldConfig<T extends FieldConfigLike>(field: T): T {
-  const next: T = { ...field }
+  const next: FieldConfigLike  = { ...field }
 
   if (typeof next.name === 'string') {
     const translatedLabel = FIELD_LABEL_TRANSLATIONS[next.name]
@@ -114,7 +106,7 @@ function localizeFieldConfig<T extends FieldConfigLike>(field: T): T {
     }))
   }
 
-  return next
+  return next as T
 }
 
 function buildLocalizedFormBlock(
@@ -214,27 +206,21 @@ export default buildConfig({
       ru,
     },
   },
-
   editor: lexicalEditor({}),
-
-  email: disableEmail
-    ? undefined
-    : nodemailerAdapter({
+  email: nodemailerAdapter({
         defaultFromAddress: process.env.SMTP_USER as string,
         defaultFromName: 'Cortex ToDo',
         transportOptions: {
           host: process.env.SMTP_HOST,
-          port: smtpPort,
-          secure: smtpPort === 465,
+          port: process.env.SMTP_PORT,
+          secure: true,
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
           },
         },
       }),
-
   collections: [Users, Pages],
-
   plugins: [
     formBuilderPlugin({
       fields: {
@@ -252,7 +238,7 @@ export default buildConfig({
         payment: false,
       },
 
-      defaultToEmail: process.env.LEADS_TO_EMAIL || process.env.SMTP_USER || undefined,
+      defaultToEmail: process.env.SMTP_USER,
 
       formOverrides: {
         labels: {
@@ -374,12 +360,11 @@ export default buildConfig({
       },
     }),
   ],
-
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
-    push: true,
+    push: false,
   }),
 
   secret: process.env.PAYLOAD_SECRET || '',

@@ -1,7 +1,7 @@
 import 'server-only'
 
 import type { Metadata } from 'next'
-import { cacheTag } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { getPayload } from 'payload'
 
 import configPromise from '@payload-config'
@@ -20,6 +20,7 @@ function normalizeText(value: string | null | undefined, fallback: string) {
 export async function getPageSEO(pageKey: PageSEOKey): Promise<PageSEODocument | null> {
   'use cache'
 
+  cacheLife('max')
   cacheTag(`page-seo:${pageKey}`)
 
   const payload = await getPayload({

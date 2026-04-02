@@ -76,7 +76,7 @@ export function CortexFinalCTA() {
                 <div className="mt-5">
                   <CTAButton
                     variant={card.variant}
-                    size="default"
+                    size="md"
                     modalType={card.modalType}
                     className="w-full"
                   >

@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Unknown page config' }, { status: 400 })
   }
 
-  revalidateTag(`page-seo:${body.pageKey}`)
+  revalidateTag(`page-seo:${body.pageKey}`, 'max')
   revalidatePath(body.path || pageConfig.path)
 
   return NextResponse.json({
