@@ -6,7 +6,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin, fields as formBuilderFields } from '@payloadcms/plugin-form-builder'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-
+import { ru } from '@payloadcms/translations/languages/ru'
 import { Users } from './collection/Users'
 
 const filename = fileURLToPath(import.meta.url)
@@ -61,6 +61,10 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
       importMapFile: './app/(payload)/importMap.ts',
     },
+  },
+  i18n: {
+    fallbackLanguage: 'ru',
+    supportedLanguages: { ru }
   },
 
   editor: lexicalEditor({}),
