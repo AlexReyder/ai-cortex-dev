@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    pages: Page;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -144,6 +146,47 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * Служебное поле. Заполняется автоматически по pageKey.
+   */
+  pageName?: string | null;
+  /**
+   * Выберите существующий route проекта. Новые страницы через эту коллекцию не создаются.
+   */
+  pageKey:
+    | 'home'
+    | 'solutions'
+    | 'cortex-ai'
+    | 'todo-enterprise'
+    | 'about'
+    | 'contacts'
+    | 'demo'
+    | 'cases'
+    | 'compare'
+    | 'security'
+    | 'investors'
+    | 'partners';
+  /**
+   * Служебное поле. URL маршрута заполняется автоматически.
+   */
+  path?: string | null;
+  /**
+   * Title страницы для тега <title>.
+   */
+  seoTitle: string;
+  /**
+   * Description страницы для meta description.
+   */
+  seoDescription: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -524,6 +567,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'forms';
         value: number | Form;
       } | null)
@@ -595,6 +642,19 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  pageName?: T;
+  pageKey?: T;
+  path?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -11,10 +11,10 @@ import { CustomizationSection } from "@/components/security/customization"
 import { SecurityFAQ } from "@/components/security/faq"
 import { ImplementationPath } from "@/components/security/implementation-path"
 import { SecurityFinalCTA } from "@/components/security/final-cta"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata: Metadata = {
-  title: "Безопасность, Развертывание, Миграция — ToDo Enterprise | Cortex ToDo",
-  description: "Безопасное внедрение ToDo Enterprise в контуре клиента. Сервер клиента, private cloud, российский ЦОД. Migration-friendly логика и управляемое внедрение для enterprise-команд.",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('security')
 }
 
 export default function SecurityPage() {

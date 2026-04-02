@@ -1,4 +1,3 @@
-import type { Metadata } from 'next'
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/sections/hero"
 import { TrustBarSection } from "@/components/sections/trust-bar"
@@ -15,15 +14,10 @@ import { CompanySection } from "@/components/sections/company"
 import { FinalCTASection } from "@/components/sections/final-cta"
 import { LeadFormsSection } from "@/components/sections/lead-forms"
 import { Footer } from "@/components/footer"
-import { buildPageMetadata } from '@/lib/get-page-seo'
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildPageMetadata('home')
-}
-
-export default function HomePage() {
+export default function SolutionTemplatePage() {
   return (
-    <main className="min-h-screen">
+    <>
       <Header />
       <HeroSection />
       <TrustBarSection />
@@ -40,6 +34,6 @@ export default function HomePage() {
       <FinalCTASection />
       <LeadFormsSection />
       <Footer />
-    </main>
+    </>
   )
 }

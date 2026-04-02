@@ -11,10 +11,10 @@ import { WhenBestChoice } from "@/components/compare/when-best-choice"
 import { EnterpriseDifferentiator } from "@/components/compare/enterprise-differentiator"
 import { CompareFinalCTA } from "@/components/compare/final-cta"
 import { Footer } from "@/components/footer"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata: Metadata = {
-  title: "ToDo Enterprise vs Jira / Trello / Asana / Tracker — Сравнение | Cortex ToDo",
-  description: "Сравнение ToDo Enterprise с Jira, Trello, Asana и Yandex Tracker. Привычная логика работы, российская инфраструктура, безопасное размещение и возможность адаптации под enterprise-клиента.",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('compare')
 }
 
 export default function ComparePage() {

@@ -12,10 +12,10 @@ import { AudienceSection } from "@/components/about/audience"
 import { RoadmapSection } from "@/components/about/roadmap"
 import { TrustSection } from "@/components/about/trust"
 import { FinalCTASection } from "@/components/about/final-cta"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata: Metadata = {
-  title: "О компании — Cortex ToDo | Российская технологическая платформа",
-  description: "Cortex ToDo — российская технологическая платформа для управления работой и развития enterprise-экосистемы. Строим отечественную экосистему продуктов для компаний.",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('about')
 }
 
 export default function AboutPage() {

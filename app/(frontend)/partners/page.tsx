@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PartnersHeroSection } from "@/components/partners/hero"
@@ -10,10 +11,10 @@ import { PlatformEcosystemSection } from "@/components/partners/platform-ecosyst
 import { ImplementationModelSection } from "@/components/partners/implementation-model"
 import { PartnerFormSection } from "@/components/partners/partner-form"
 import { PartnerFinalCTASection } from "@/components/partners/final-cta"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata = {
-  title: "Партнерам — Cortex ToDo",
-  description: "Партнерская модель для внедрения и развития Cortex ToDo. Интеграторы, облачные провайдеры, ЦОД и enterprise-партнеры.",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('partners')
 }
 
 export default function PartnersPage() {

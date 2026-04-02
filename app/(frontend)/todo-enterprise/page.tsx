@@ -11,11 +11,24 @@ import { IndustriesSection } from "@/components/todo-enterprise/industries"
 import { EcosystemSection } from "@/components/todo-enterprise/ecosystem"
 import { ImplementationStepsSection } from "@/components/todo-enterprise/implementation-steps"
 import { FinalCTASection } from "@/components/todo-enterprise/final-cta"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata: Metadata = {
-  title: "ToDo Enterprise — Российская система управления задачами и проектами | Cortex ToDo",
-  description: "Безопасная enterprise-платформа для управления задачами, проектами и рабочими процессами. Привычный сценарий работы для команд с надежным переходом с западных систем. Private cloud, on-prem, migration-friendly.",
-  keywords: ["ToDo Enterprise", "управление задачами", "enterprise", "Kanban", "Scrum", "российская платформа", "импортозамещение", "Jira альтернатива"],
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = await buildPageMetadata('todo-enterprise')
+
+  return {
+    ...metadata,
+    keywords: [
+      "ToDo Enterprise",
+      "управление задачами",
+      "enterprise",
+      "Kanban",
+      "Scrum",
+      "российская платформа",
+      "импортозамещение",
+      "Jira альтернатива",
+    ],
+  }
 }
 
 export default function TodoEnterprisePage() {

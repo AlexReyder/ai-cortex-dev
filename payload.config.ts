@@ -9,6 +9,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { ru } from '@payloadcms/translations/languages/ru'
 
 import { Users } from './collection/Users'
+import { Pages } from './collection/Pages'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -232,7 +233,7 @@ export default buildConfig({
         },
       }),
 
-  collections: [Users],
+  collections: [Users, Pages],
 
   plugins: [
     formBuilderPlugin({

@@ -18,10 +18,10 @@ import { FirstVersion } from "@/components/cortex-ai/first-version"
 import { IntegrationLogic } from "@/components/cortex-ai/integration-logic"
 import { WhyNow } from "@/components/cortex-ai/why-now"
 import { CortexFinalCTA } from "@/components/cortex-ai/final-cta"
+import { buildPageMetadata } from "@/lib/get-page-seo"
 
-export const metadata: Metadata = {
-  title: "Cortex AI Agents — AI-слой для операционной работы компании | Cortex ToDo",
-  description: "Встречи, переписки, документы, задачи и управленческие сигналы в одной рабочей среде. Cortex AI превращает хаос в понятный процесс.",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('cortex-ai')
 }
 
 export default function CortexAIPage() {
