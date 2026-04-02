@@ -155,22 +155,49 @@ export interface Form {
   fields?:
     | (
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'checkbox';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             /**
-             * Подсказка внутри поля на фронтенде
+             * Подсказка внутри поля на фронтенде.
              */
             placeholder?: string | null;
             id?: string | null;
@@ -178,6 +205,9 @@ export interface Form {
             blockType: 'email';
           }
         | {
+            /**
+             * Информационный текст, который отображается внутри формы.
+             */
             message?: {
               root: {
                 type: string;
@@ -198,41 +228,95 @@ export interface Form {
             blockType: 'message';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: number | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'number';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: string | null;
+            /**
+             * Подсказка внутри поля на фронтенде.
+             */
             placeholder?: string | null;
+            /**
+             * Варианты выбора для select, radio или checkbox.
+             */
             options?:
               | {
+                  /**
+                   * Подпись, которую увидит пользователь на сайте.
+                   */
                   label: string;
                   value: string;
                   id?: string | null;
                 }[]
               | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'select';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: string | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             /**
-             * Подсказка внутри поля на фронтенде
+             * Подсказка внутри поля на фронтенде.
              */
             placeholder?: string | null;
             id?: string | null;
@@ -240,13 +324,28 @@ export interface Form {
             blockType: 'text';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: string | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             /**
-             * Подсказка внутри поля на фронтенде
+             * Подсказка внутри поля на фронтенде.
              */
             placeholder?: string | null;
             id?: string | null;
@@ -254,17 +353,38 @@ export interface Form {
             blockType: 'textarea';
           }
         | {
+            /**
+             * Техническое имя поля. Используется в отправке формы, шаблонах писем и на фронтенде. Лучше не менять после подключения формы на сайт.
+             */
             name: string;
+            /**
+             * Подпись, которую увидит пользователь на сайте.
+             */
             label?: string | null;
+            /**
+             * Ширина поля в сетке формы.
+             */
             width?: number | null;
+            /**
+             * Значение, которое будет подставлено по умолчанию.
+             */
             defaultValue?: string | null;
+            /**
+             * Варианты выбора для select, radio или checkbox.
+             */
             options?:
               | {
+                  /**
+                   * Подпись, которую увидит пользователь на сайте.
+                   */
                   label: string;
                   value: string;
                   id?: string | null;
                 }[]
               | null;
+            /**
+             * Если включено, поле обязательно для заполнения.
+             */
             required?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -272,11 +392,17 @@ export interface Form {
           }
       )[]
     | null;
+  /**
+   * Текст кнопки отправки формы.
+   */
   submitButtonLabel?: string | null;
   /**
-   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
+   * Что должно произойти после успешной отправки формы.
    */
   confirmationType?: ('message' | 'redirect') | null;
+  /**
+   * Сообщение, которое увидит пользователь после успешной отправки.
+   */
   confirmationMessage?: {
     root: {
       type: string;
@@ -293,21 +419,30 @@ export interface Form {
     [k: string]: unknown;
   } | null;
   redirect?: {
+    /**
+     * Ссылка, на которую нужно перенаправить пользователя после отправки.
+     */
     url: string;
   };
   /**
-   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
+   * Уведомления, которые будут отправляться после успешной отправки формы.
    */
   emails?:
     | {
+        /**
+         * Основной адрес получателя уведомления.
+         */
         emailTo?: string | null;
         cc?: string | null;
         bcc?: string | null;
+        /**
+         * Адрес, на который будет удобно отвечать из письма.
+         */
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
         /**
-         * Enter the message that should be sent in this email.
+         * Информационный текст, который отображается внутри формы.
          */
         message?: {
           root: {
@@ -328,7 +463,7 @@ export interface Form {
       }[]
     | null;
   /**
-   * Технический slug для загрузки формы на фронтенде. Например: home-ai-lead
+   * Технический ключ для загрузки формы на фронтенде. Например: home-ai-lead
    */
   slug: string;
   formType?: ('section' | 'modal') | null;
